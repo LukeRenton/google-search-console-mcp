@@ -10,8 +10,9 @@ MCP server for [Google Search Console](https://search.google.com/search-console)
 | --- | --- | --- |
 | `list_properties` | List the Search Console properties your account can access | available |
 | `query_search_analytics` | Clicks, impressions, CTR, and position by query, page, date, device, or country, with optional period-over-period comparison | available |
-| `inspect_url` | Index status, canonical, and last crawl for a single URL | planned |
-| `list_sitemaps` | Submitted sitemaps and their status | planned |
+| `inspect_url` | Index status, chosen canonical, last crawl, and rich-result issues for a single URL | available |
+| `list_sitemaps` | Submitted sitemaps with processing status, URL counts, errors, and warnings | available |
+| `submit_sitemap` | Submit or resubmit a sitemap to Google (the only write operation) | available |
 
 ## Setup
 
@@ -24,7 +25,7 @@ MCP server for [Google Search Console](https://search.google.com/search-console)
    npx google-search-console-mcp auth path/to/oauth-client.json
    ```
 
-   A browser opens for Google sign-in; the resulting credentials are stored in `~/.config/google-search-console-mcp/tokens.json` (override the location with `GSC_TOKEN_FILE`). The server requests the read-only Search Console scope.
+   A browser opens for Google sign-in; the resulting credentials are stored in `~/.config/google-search-console-mcp/tokens.json` (override the location with `GSC_TOKEN_FILE`). The server requests the `webmasters` scope — full Search Console access, needed by `submit_sitemap`, and nothing beyond Search Console. The token file is plain JSON readable by your user account; treat it like a password.
 
 ## Development
 

@@ -6,7 +6,9 @@ import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { auth as googleAuth } from '@googleapis/searchconsole';
 
-export const SCOPES = ['https://www.googleapis.com/auth/webmasters.readonly'];
+// Full (not .readonly) scope: submit_sitemap needs write access. Sitemap
+// submission/deletion is the entire write surface of the Search Console API.
+export const SCOPES = ['https://www.googleapis.com/auth/webmasters'];
 
 // The OAuth2 class re-exported by the API package, so the auth client and the
 // API client can never disagree about google-auth-library versions.

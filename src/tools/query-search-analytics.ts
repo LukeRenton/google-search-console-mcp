@@ -1,7 +1,7 @@
 import type { searchconsole_v1 } from '@googleapis/searchconsole';
 import type { McpServer } from '@modelcontextprotocol/server';
 import * as z from 'zod/v4';
-import { gscClient } from '../gsc.js';
+import { describeApiError, gscClient } from '../gsc.js';
 
 const DATE = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Use YYYY-MM-DD');
 
@@ -114,24 +114,6 @@ async function runQuery(
   } catch (error) {
     throw describeApiError(error, input.siteUrl);
   }
-}
-
-function describeApiError(error: unknown, siteUrl: string): Error {
-  const status =
-    (error as { status?: unknown }).status ?? (error as { code?: unknown }).code;
-  const message = error instanceof Error ? error.message : String(error);
-  if (status === 403) {
-    return new Error(
-      `No access to "${siteUrl}" (${message}). Call list_properties: the property must be listed there ` +
-        'with a permission level other than siteUnverifiedUser.',
-    );
-  }
-  if (status === 404) {
-    return new Error(
-      `"${siteUrl}" is not a Search Console property (${message}). Use a siteUrl exactly as returned by list_properties.`,
-    );
-  }
-  return error instanceof Error ? error : new Error(message);
 }
 
 function metric(row: Row): { clicks: number; impressions: number; ctr: number; position: number } {
