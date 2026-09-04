@@ -2,11 +2,10 @@ import type { searchconsole_v1 } from '@googleapis/searchconsole';
 import type { McpServer } from '@modelcontextprotocol/server';
 import * as z from 'zod/v4';
 import { describeApiError, gscClient } from '../gsc.js';
+import { SITE_URL, resolveSiteUrl } from '../pin.js';
 
 const INPUT = z.object({
-  siteUrl: z
-    .string()
-    .describe('Property exactly as returned by list_properties, e.g. "sc-domain:example.com" or "https://example.com/".'),
+  siteUrl: SITE_URL,
   sitemapIndex: z
     .string()
     .optional()
@@ -27,18 +26,19 @@ export function registerListSitemaps(server: McpServer): void {
       inputSchema: INPUT,
     },
     async (input) => {
+      const siteUrl = resolveSiteUrl(input.siteUrl);
       const gsc = await gscClient();
       let sitemaps: searchconsole_v1.Schema$WmxSitemap[];
       try {
-        const params: searchconsole_v1.Params$Resource$Sitemaps$List = { siteUrl: input.siteUrl };
+        const params: searchconsole_v1.Params$Resource$Sitemaps$List = { siteUrl };
         if (input.sitemapIndex !== undefined) params.sitemapIndex = input.sitemapIndex;
         const response = await gsc.sitemaps.list(params);
         sitemaps = response.data.sitemap ?? [];
       } catch (error) {
-        throw describeApiError(error, input.siteUrl);
+        throw describeApiError(error, siteUrl);
       }
       if (sitemaps.length === 0) {
-        const scope = input.sitemapIndex === undefined ? input.siteUrl : `sitemap index ${input.sitemapIndex}`;
+        const scope = input.sitemapIndex === undefined ? siteUrl : `sitemap index ${input.sitemapIndex}`;
         return {
           content: [
             {

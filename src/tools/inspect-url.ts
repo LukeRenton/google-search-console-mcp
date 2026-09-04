@@ -2,11 +2,10 @@ import type { searchconsole_v1 } from '@googleapis/searchconsole';
 import type { McpServer } from '@modelcontextprotocol/server';
 import * as z from 'zod/v4';
 import { describeApiError, gscClient } from '../gsc.js';
+import { SITE_URL, resolveSiteUrl } from '../pin.js';
 
 const INPUT = z.object({
-  siteUrl: z
-    .string()
-    .describe('Property exactly as returned by list_properties, e.g. "sc-domain:example.com" or "https://example.com/".'),
+  siteUrl: SITE_URL,
   url: z
     .string()
     .url()
@@ -26,15 +25,16 @@ export function registerInspectUrl(server: McpServer): void {
       inputSchema: INPUT,
     },
     async (input) => {
+      const siteUrl = resolveSiteUrl(input.siteUrl);
       const gsc = await gscClient();
       let result: searchconsole_v1.Schema$UrlInspectionResult;
       try {
         const response = await gsc.urlInspection.index.inspect({
-          requestBody: { siteUrl: input.siteUrl, inspectionUrl: input.url },
+          requestBody: { siteUrl, inspectionUrl: input.url },
         });
         result = response.data.inspectionResult ?? {};
       } catch (error) {
-        throw describeApiError(error, input.siteUrl);
+        throw describeApiError(error, siteUrl);
       }
       return { content: [{ type: 'text', text: formatInspection(input.url, result) }] };
     },

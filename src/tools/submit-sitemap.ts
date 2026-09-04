@@ -1,11 +1,10 @@
 import type { McpServer } from '@modelcontextprotocol/server';
 import * as z from 'zod/v4';
 import { describeApiError, gscClient } from '../gsc.js';
+import { SITE_URL, resolveSiteUrl } from '../pin.js';
 
 const INPUT = z.object({
-  siteUrl: z
-    .string()
-    .describe('Property exactly as returned by list_properties, e.g. "sc-domain:example.com" or "https://example.com/".'),
+  siteUrl: SITE_URL,
   sitemapUrl: z
     .string()
     .url()
@@ -25,13 +24,14 @@ export function registerSubmitSitemap(server: McpServer): void {
       inputSchema: INPUT,
     },
     async (input) => {
+      const siteUrl = resolveSiteUrl(input.siteUrl);
       const gsc = await gscClient();
       try {
-        await gsc.sitemaps.submit({ siteUrl: input.siteUrl, feedpath: input.sitemapUrl });
+        await gsc.sitemaps.submit({ siteUrl, feedpath: input.sitemapUrl });
       } catch (error) {
         throw describeApiError(
           error,
-          input.siteUrl,
+          siteUrl,
           'Submitting also requires: (1) a token with the full webmasters scope, so if authentication was set ' +
             'up when this server was read-only, re-run "npx google-search-console-mcp auth ..." in a terminal; ' +
             '(2) siteOwner or siteFullUser permission on the property.',
@@ -42,7 +42,7 @@ export function registerSubmitSitemap(server: McpServer): void {
           {
             type: 'text',
             text:
-              `Submitted ${input.sitemapUrl} for ${input.siteUrl}. Google will fetch it on its own schedule ` +
+              `Submitted ${input.sitemapUrl} for ${siteUrl}. Google will fetch it on its own schedule ` +
               '(minutes to days). Check processing status and any errors later with list_sitemaps.',
           },
         ],

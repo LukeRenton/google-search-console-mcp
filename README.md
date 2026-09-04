@@ -27,6 +27,21 @@ MCP server for [Google Search Console](https://search.google.com/search-console)
 
    A browser opens for Google sign-in; the resulting credentials are stored in `~/.config/google-search-console-mcp/tokens.json` (override the location with `GSC_TOKEN_FILE`). The server requests the `webmasters` scope — full Search Console access, needed by `submit_sitemap`, and nothing beyond Search Console. The token file is plain JSON readable by your user account; treat it like a password.
 
+## Scoping a project to one property (optional)
+
+Set the `GSC_PROPERTY` environment variable in a server registration to pin every tool to a
+single property — useful when registering the server per project:
+
+```sh
+claude mcp add gsc --env GSC_PROPERTY=sc-domain:example.com -- npx google-search-console-mcp
+```
+
+With the pin set, `siteUrl` becomes optional (the pinned property is used automatically),
+requests for any other property are rejected, and `list_properties` shows only the pinned
+entry. Note this is a guardrail for the model, not credential-level security: the stored
+OAuth token still has account-wide access. For hard separation, authenticate different Google
+accounts into different token files via `GSC_TOKEN_FILE`.
+
 ## Companion skill: `seo`
 
 The `skill/` directory contains an agent skill that turns this server's data into diagnosis

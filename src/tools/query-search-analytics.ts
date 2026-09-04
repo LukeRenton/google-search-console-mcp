@@ -2,6 +2,7 @@ import type { searchconsole_v1 } from '@googleapis/searchconsole';
 import type { McpServer } from '@modelcontextprotocol/server';
 import * as z from 'zod/v4';
 import { describeApiError, gscClient } from '../gsc.js';
+import { SITE_URL, resolveSiteUrl } from '../pin.js';
 
 const DATE = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Use YYYY-MM-DD');
 
@@ -16,9 +17,7 @@ const FILTER = z.object({
 });
 
 const INPUT = z.object({
-  siteUrl: z
-    .string()
-    .describe('Property exactly as returned by list_properties, e.g. "sc-domain:example.com" or "https://example.com/".'),
+  siteUrl: SITE_URL,
   startDate: DATE.describe('First day of the period, inclusive. Data lags about 2 days behind today.'),
   endDate: DATE.describe('Last day of the period, inclusive.'),
   dimensions: z
@@ -48,7 +47,8 @@ const INPUT = z.object({
     .describe('Baseline period. When set, each metric also shows its change versus this period.'),
 });
 
-type QueryInput = z.infer<typeof INPUT>;
+type RawInput = z.infer<typeof INPUT>;
+type QueryInput = Omit<RawInput, 'siteUrl'> & { siteUrl: string };
 type Row = searchconsole_v1.Schema$ApiDataRow;
 
 export function registerQuerySearchAnalytics(server: McpServer): void {
@@ -63,7 +63,8 @@ export function registerQuerySearchAnalytics(server: McpServer): void {
         'site totals — for true totals, call with dimensions: [].',
       inputSchema: INPUT,
     },
-    async (input) => {
+    async (raw) => {
+      const input: QueryInput = { ...raw, siteUrl: resolveSiteUrl(raw.siteUrl) };
       const gsc = await gscClient();
       const current = await runQuery(gsc, input, { startDate: input.startDate, endDate: input.endDate });
       if (input.compareWith === undefined) {
