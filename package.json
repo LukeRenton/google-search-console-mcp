@@ -3,6 +3,13 @@
   "version": "0.1.0",
   "description": "MCP server for Google Search Console: query search analytics, inspect URLs, and check sitemaps from any MCP client.",
   "license": "MIT",
+  "author": "Luke Renton",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LukeRenton/google-search-console-mcp.git"
+  },
+  "homepage": "https://github.com/LukeRenton/google-search-console-mcp#readme",
+  "bugs": "https://github.com/LukeRenton/google-search-console-mcp/issues",
   "type": "module",
   "bin": {
     "google-search-console-mcp": "dist/index.js"

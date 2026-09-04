@@ -27,6 +27,22 @@ MCP server for [Google Search Console](https://search.google.com/search-console)
 
    A browser opens for Google sign-in; the resulting credentials are stored in `~/.config/google-search-console-mcp/tokens.json` (override the location with `GSC_TOKEN_FILE`). The server requests the `webmasters` scope — full Search Console access, needed by `submit_sitemap`, and nothing beyond Search Console. The token file is plain JSON readable by your user account; treat it like a password.
 
+## Companion skill: `seo`
+
+The `skill/` directory contains an agent skill that turns this server's data into diagnosis
+and fixes: a differential method (indexed → impressions → position → demand), verified
+reality checks (retired rich-result types, AI-search eligibility, Search Console data
+incidents), repo-level trip-wires, and a fix-and-verify loop. For Claude Code, install it by
+copying the folder:
+
+```sh
+cp -r skill ~/.claude/skills/seo
+```
+
+Then ask, in any project: *"how's the SEO?"* The skill's reference chapters are distilled
+from [claude-seo](https://github.com/AgricIDaniel/claude-seo) (MIT) with the core claims
+verified against Google's primary documentation.
+
 ## Development
 
 ```sh

@@ -58,7 +58,9 @@ export function registerQuerySearchAnalytics(server: McpServer): void {
       description:
         'Query Search Console performance data: clicks, impressions, click-through rate, and average ranking position. ' +
         'Call this for any question about how a site performs in Google Search: top queries or pages, trends over time, ' +
-        'device or country splits, and period-over-period comparisons via compareWith.',
+        'device or country splits, and period-over-period comparisons via compareWith. ' +
+        'Note: rows grouped by query or page omit Google-anonymized low-volume queries, so summing rows understates ' +
+        'site totals — for true totals, call with dimensions: [].',
       inputSchema: INPUT,
     },
     async (input) => {
