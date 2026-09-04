@@ -1,18 +1,49 @@
 # google-search-console-mcp
 
-MCP server for [Google Search Console](https://search.google.com/search-console). Query search analytics, inspect URLs, and check sitemaps from any MCP client (Claude Code, Claude Desktop, Cursor, and others).
+[![npm](https://img.shields.io/npm/v/%40lukerent%2Fgoogle-search-console-mcp)](https://www.npmjs.com/package/@lukerent/google-search-console-mcp)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-> **Status: early development.**
+MCP server for [Google Search Console](https://search.google.com/search-console). Query search
+analytics, inspect how Google sees your URLs, and manage sitemaps from any MCP client (Claude
+Code, Claude Desktop, Cursor, and others) — plus a companion agent skill that turns the data
+into SEO diagnosis and fixes.
+
+Built on the stateless MCP specification `2026-07-28`: five condensed tools instead of a
+mirror of API endpoints, output shaped for model context, and error messages that tell the
+model what to do next.
+
+## Quick start
+
+Claude Code:
+
+```sh
+claude mcp add gsc -- npx -y @lukerent/google-search-console-mcp
+```
+
+Any other MCP client, in its server config:
+
+```json
+{
+  "mcpServers": {
+    "gsc": {
+      "command": "npx",
+      "args": ["-y", "@lukerent/google-search-console-mcp"]
+    }
+  }
+}
+```
+
+Then complete the one-time Google authorization below.
 
 ## Tools
 
-| Tool | Purpose | Status |
-| --- | --- | --- |
-| `list_properties` | List the Search Console properties your account can access | available |
-| `query_search_analytics` | Clicks, impressions, CTR, and position by query, page, date, device, or country, with optional period-over-period comparison | available |
-| `inspect_url` | Index status, chosen canonical, last crawl, and rich-result issues for a single URL | available |
-| `list_sitemaps` | Submitted sitemaps with processing status, URL counts, errors, and warnings | available |
-| `submit_sitemap` | Submit or resubmit a sitemap to Google (the only write operation) | available |
+| Tool | Purpose |
+| --- | --- |
+| `list_properties` | List the Search Console properties your account can access |
+| `query_search_analytics` | Clicks, impressions, CTR, and position by query, page, date, device, or country, with filters and period-over-period comparison |
+| `inspect_url` | Index status, chosen canonical, last crawl, sitemap membership, and rich-result issues for a single URL |
+| `list_sitemaps` | Submitted sitemaps with processing status, URL counts, errors, and warnings |
+| `submit_sitemap` | Submit or resubmit a sitemap to Google (the only write operation) |
 
 ## Setup
 
@@ -22,7 +53,7 @@ MCP server for [Google Search Console](https://search.google.com/search-console)
 4. Authorize once from a terminal:
 
    ```sh
-   npx @lukerent/google-search-console-mcp auth path/to/oauth-client.json
+   npx -y @lukerent/google-search-console-mcp auth path/to/oauth-client.json
    ```
 
    A browser opens for Google sign-in; the resulting credentials are stored in `~/.config/google-search-console-mcp/tokens.json` (override the location with `GSC_TOKEN_FILE`). The server requests the `webmasters` scope — full Search Console access, needed by `submit_sitemap`, and nothing beyond Search Console. The token file is plain JSON readable by your user account; treat it like a password.
@@ -33,7 +64,7 @@ Set the `GSC_PROPERTY` environment variable in a server registration to pin ever
 single property — useful when registering the server per project:
 
 ```sh
-claude mcp add gsc --env GSC_PROPERTY=sc-domain:example.com -- npx @lukerent/google-search-console-mcp
+claude mcp add gsc --env GSC_PROPERTY=sc-domain:example.com -- npx -y @lukerent/google-search-console-mcp
 ```
 
 With the pin set, `siteUrl` becomes optional (the pinned property is used automatically),
@@ -63,6 +94,7 @@ verified against Google's primary documentation.
 ```sh
 pnpm install
 pnpm build
+pnpm typecheck
 pnpm inspector   # opens the MCP Inspector against the built server
 ```
 
