@@ -33,7 +33,7 @@ export function registerSubmitSitemap(server: McpServer): void {
           error,
           siteUrl,
           'Submitting also requires: (1) a token with the full webmasters scope, so if authentication was set ' +
-            'up when this server was read-only, re-run "npx google-search-console-mcp auth ..." in a terminal; ' +
+            'up when this server was read-only, re-run "npx @lukerent/google-search-console-mcp auth ..." in a terminal; ' +
             '(2) siteOwner or siteFullUser permission on the property.',
         );
       }

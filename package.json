@@ -1,6 +1,9 @@
 {
-  "name": "google-search-console-mcp",
+  "name": "@lukerent/google-search-console-mcp",
   "version": "0.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "MCP server for Google Search Console: query search analytics, inspect URLs, and check sitemaps from any MCP client.",
   "license": "MIT",
   "author": "Luke Renton",

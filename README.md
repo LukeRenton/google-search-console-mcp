@@ -22,7 +22,7 @@ MCP server for [Google Search Console](https://search.google.com/search-console)
 4. Authorize once from a terminal:
 
    ```sh
-   npx google-search-console-mcp auth path/to/oauth-client.json
+   npx @lukerent/google-search-console-mcp auth path/to/oauth-client.json
    ```
 
    A browser opens for Google sign-in; the resulting credentials are stored in `~/.config/google-search-console-mcp/tokens.json` (override the location with `GSC_TOKEN_FILE`). The server requests the `webmasters` scope — full Search Console access, needed by `submit_sitemap`, and nothing beyond Search Console. The token file is plain JSON readable by your user account; treat it like a password.
@@ -33,7 +33,7 @@ Set the `GSC_PROPERTY` environment variable in a server registration to pin ever
 single property — useful when registering the server per project:
 
 ```sh
-claude mcp add gsc --env GSC_PROPERTY=sc-domain:example.com -- npx google-search-console-mcp
+claude mcp add gsc --env GSC_PROPERTY=sc-domain:example.com -- npx @lukerent/google-search-console-mcp
 ```
 
 With the pin set, `siteUrl` becomes optional (the pinned property is used automatically),

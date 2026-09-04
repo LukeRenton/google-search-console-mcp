@@ -6,7 +6,7 @@ export async function gscClient(): Promise<searchconsole_v1.Searchconsole> {
   if (auth === null) {
     throw new Error(
       `Not authenticated with Google (no credentials at ${tokenFilePath()}). ` +
-        'Run "npx google-search-console-mcp auth <path-to-oauth-client.json>" in a terminal, ' +
+        'Run "npx @lukerent/google-search-console-mcp auth <path-to-oauth-client.json>" in a terminal, ' +
         'complete the sign-in, then retry this call.',
     );
   }
