@@ -2,7 +2,7 @@
 name: seo
 description: >
   Diagnose and fix how the user's own websites perform in Google Search, grounding every claim
-  in their real Search Console data (the mcp__gsc__* tools) and fixing root causes in the local
+  in their real Search Console data (the gsc MCP server's tools) and fixing root causes in the local
   repo. Use whenever the user asks how a site is doing in search, why a site or page isn't
   ranking, indexed, or getting traffic, mentions SEO, Google visibility, impressions, clicks,
   sitemaps, robots.txt, canonicals, meta tags, structured data, rich results, or AI
@@ -19,8 +19,45 @@ only where the evidence points. Never run a fixed checklist across everything �
 and buries the finding.
 
 Every claim about how the site is doing must trace to evidence: Search Console data via the
-`mcp__gsc__*` tools (load them via ToolSearch in one call if deferred), the live site
-(fetch the actual sitemap/robots.txt/page HTML), or the repo's source. No claims from vibes.
+gsc tools, the live site (fetch the actual sitemap/robots.txt/page HTML), or the repo's
+source. No claims from vibes.
+
+## Step 0: preflight (every run, before any analysis)
+
+**1. Are the Search Console tools available?** They are `list_properties`,
+`query_search_analytics`, `inspect_url`, `list_sitemaps`, `submit_sitemap`, prefixed
+`mcp__plugin_gsc_gsc__` when installed as the `gsc` plugin, or `mcp__gsc__` when registered by
+hand. If deferred, load all five in one ToolSearch call. If none exist, **stop** — do not
+audit from the live site or repo alone; that produces guesswork dressed as a diagnosis. Tell
+the user the server isn't enabled for this project and offer to run:
+
+```sh
+claude plugin marketplace add LukeRenton/google-search-console-mcp   # once per machine
+claude plugin install gsc@google-search-console-mcp --scope local     # per website repo
+```
+
+(`--scope local` enables it for this repo only, for this user only, nothing committed; use
+`--scope project` to share it with the repo's collaborators.) MCP servers load at session
+start, so after installing, the user must restart Claude Code and re-run the request.
+
+**2. Is it authenticated?** Call `list_properties`. A "Not authenticated with Google" error
+means the one-time OAuth setup hasn't been done on this machine: point the user to the
+README's Setup section (Google Cloud OAuth client, then
+`npx -y @lukerent/google-search-console-mcp auth <client.json>`) and stop.
+
+**3. Which property?** Work out the site's domain from the repo (sitemap/robots config,
+canonical or `metadataBase` URLs, deploy config, README/CLAUDE.md), then match it against
+`list_properties`:
+- one match → use it, and say which one you're using;
+- both `sc-domain:example.com` and a URL-prefix property → prefer `sc-domain:` (covers every
+  subdomain and protocol);
+- no match → stop: the site isn't in this Google account's Search Console. The user must
+  add and verify it (or be granted access), and data only accrues from verification onward;
+- no domain in the repo, or several candidate sites → ask.
+
+Pass that property as `siteUrl` on every call. If the server was registered with a
+`GSC_PROPERTY` pin, `list_properties` shows only the pinned entry — confirm it matches the
+repo's domain before trusting any data from it.
 
 ## The differential ladder
 

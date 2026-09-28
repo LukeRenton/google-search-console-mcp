@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "gsc": {
+      "command": "npx",
+      "args": ["-y", "@lukerent/google-search-console-mcp@0.1.0"]
+    }
+  }
+}

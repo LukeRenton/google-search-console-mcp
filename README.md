@@ -14,7 +14,20 @@ model what to do next.
 
 ## Quick start
 
-Claude Code:
+Claude Code — install the `gsc` plugin, which bundles the server and the companion `seo`
+skill. Add the marketplace once per machine, then enable the plugin in each website repo:
+
+```sh
+claude plugin marketplace add LukeRenton/google-search-console-mcp
+claude plugin install gsc@google-search-console-mcp --scope local
+```
+
+`--scope local` enables it for the current repo only, for you only, with nothing committed.
+Use `--scope project` to share it with the repo's collaborators, or `--scope user` to load it
+in every project. Restart Claude Code after installing. Run `/gsc:seo`, or just ask
+*"how's the SEO?"*.
+
+Without the plugin (server only):
 
 ```sh
 claude mcp add gsc -- npx -y @lukerent/google-search-console-mcp
@@ -75,17 +88,19 @@ accounts into different token files via `GSC_TOKEN_FILE`.
 
 ## Companion skill: `seo`
 
-The `skill/` directory contains an agent skill that turns this server's data into diagnosis
-and fixes: a differential method (indexed → impressions → position → demand), verified
+The `skills/seo/` directory contains an agent skill that turns this server's data into
+diagnosis and fixes: a preflight (server enabled? authenticated? which property matches this
+repo's domain?), a differential method (indexed → impressions → position → demand), verified
 reality checks (retired rich-result types, AI-search eligibility, Search Console data
-incidents), repo-level trip-wires, and a fix-and-verify loop. For Claude Code, install it by
-copying the folder:
+incidents), repo-level trip-wires, and a fix-and-verify loop. The `gsc` plugin installs it
+alongside the server; without the plugin, copy the folder instead:
 
 ```sh
-cp -r skill ~/.claude/skills/seo
+cp -r skills/seo ~/.claude/skills/seo
 ```
 
-Then ask, in any project: *"how's the SEO?"* The skill's reference chapters are distilled
+The plugin runs the server unpinned: the skill picks the property matching the repo's domain
+on each run. The skill's reference chapters are distilled
 from [claude-seo](https://github.com/AgricIDaniel/claude-seo) (MIT) with the core claims
 verified against Google's primary documentation.
 

@@ -1,0 +1,18 @@
+{
+  "name": "google-search-console-mcp",
+  "description": "Google Search Console MCP server + SEO diagnosis skill for Claude Code.",
+  "owner": {
+    "name": "Luke Renton"
+  },
+  "plugins": [
+    {
+      "name": "gsc",
+      "source": "./",
+      "description": "Google Search Console MCP server + seo diagnosis skill. Enable per website repo.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Luke Renton"
+      }
+    }
+  ]
+}

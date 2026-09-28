@@ -1,0 +1,12 @@
+{
+  "name": "gsc",
+  "version": "0.1.0",
+  "description": "Google Search Console for Claude Code: the gsc MCP server (search analytics, URL inspection, sitemaps) plus the seo diagnosis skill that uses it.",
+  "author": {
+    "name": "Luke Renton"
+  },
+  "homepage": "https://github.com/LukeRenton/google-search-console-mcp",
+  "repository": "https://github.com/LukeRenton/google-search-console-mcp",
+  "license": "MIT",
+  "keywords": ["seo", "google-search-console", "mcp"]
+}
