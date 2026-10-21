@@ -1,6 +1,6 @@
 <!-- [ ] todo · [~] done, awaiting verification · [x] verified · [-] cancelled · [!] blocked
      Tags: BUG FEAT SEC CHORE DECISION · Sev: CRIT HIGH MED LOW
-     Next ID: T-006 · Spec: /todo-add
+     Next ID: T-009 · Spec: /todo-add
      [x] + [-] (except DECISIONs) → DONE.md · resolved decisions stay below -->
 
 # Todo — google-search-console-mcp
@@ -9,7 +9,9 @@
 - [ ] T-001 FEAT LOW — `auth` re-run without client file: reuse clientId/clientSecret already stored in tokens.json (src/index.ts, src/auth.ts) _(src: chat 08-21)_
 - [ ] T-003 BUG LOW — auth flow hangs forever if the browser consent is abandoned; add a timeout that closes the loopback server with a clear message (src/auth.ts) _(src: chat 08-14)_
 - [ ] T-004 FEAT LOW — orderBy param for query_search_analytics; models currently over-fetch and re-sort client-side _(src: chat 08-14)_
+- [~] T-007 FEAT LOW — optional dataState: 'all' on query_search_analytics to include fresh not-yet-final data (last ~2 days) for post-deploy checks (src/tools/query-search-analytics.ts) _(src: chat 10-21, vmandic/searchconsole-mcp review)_
 - [ ] T-002 CHORE — add .gitattributes to normalize line endings and silence CRLF warnings before open-sourcing _(src: chat 08-21)_
 - [ ] T-005 CHORE — server version string in src/server.ts duplicates package.json; read it from one place _(src: chat 08-14)_
+- [ ] T-008 CHORE — README "agentic install prompt": a paste-into-your-agent block that does the setup for the user _(src: chat 10-21, vmandic/searchconsole-mcp review)_
 
 ## Decisions

@@ -18,7 +18,9 @@ const FILTER = z.object({
 
 const INPUT = z.object({
   siteUrl: SITE_URL,
-  startDate: DATE.describe('First day of the period, inclusive. Data lags about 2 days behind today.'),
+  startDate: DATE.describe(
+    'First day of the period, inclusive. Final data lags about 2 days behind today (see dataState).',
+  ),
   endDate: DATE.describe('Last day of the period, inclusive.'),
   dimensions: z
     .array(DIMENSION)
@@ -45,6 +47,14 @@ const INPUT = z.object({
     .object({ startDate: DATE, endDate: DATE })
     .optional()
     .describe('Baseline period. When set, each metric also shows its change versus this period.'),
+  dataState: z
+    .enum(['final', 'all'])
+    .default('final')
+    .describe(
+      '"final" (default) returns only finalized data, which lags about 2 days. "all" also includes the most ' +
+        'recent, still-preliminary days: use it to check the last day or two, e.g. right after a deploy. ' +
+        'Preliminary numbers can still change; compareWith applies the same dataState to both periods.',
+    ),
 });
 
 type RawInput = z.infer<typeof INPUT>;
@@ -104,6 +114,7 @@ async function runQuery(
     endDate: period.endDate,
     dimensions: input.dimensions,
     type: input.searchType,
+    dataState: input.dataState,
     // One extra row is a truncation probe: if it comes back, more rows exist.
     rowLimit: rowLimit + 1,
   };
@@ -133,18 +144,22 @@ function keyOf(row: Row): string {
 }
 
 function headerFor(input: QueryInput): string {
+  const fresh = input.dataState === 'all' ? '  (includes preliminary data)' : '';
   if (isDailyTrend(input)) {
-    return `${input.siteUrl}  ${input.searchType}  ${input.startDate}..${input.endDate}  daily`;
+    return `${input.siteUrl}  ${input.searchType}  ${input.startDate}..${input.endDate}  daily${fresh}`;
   }
   const grouping = input.dimensions.length > 0 ? input.dimensions.join(' / ') : 'whole-period aggregate';
-  return `${input.siteUrl}  ${input.searchType}  ${input.startDate}..${input.endDate}  ${grouping}, top ${input.rowLimit} by clicks`;
+  return `${input.siteUrl}  ${input.searchType}  ${input.startDate}..${input.endDate}  ${grouping}, top ${input.rowLimit} by clicks${fresh}`;
 }
 
 function emptyMessage(input: QueryInput): string {
   const filterNote = input.filters !== undefined && input.filters.length > 0 ? ' with the given filters' : '';
   return (
     `No data for ${input.siteUrl} between ${input.startDate} and ${input.endDate}${filterNote}. ` +
-    'Search Console data lags about 2 days behind today; also check that the property has search traffic in this period.'
+    (input.dataState === 'all'
+      ? 'Even preliminary data can trail today by several hours; '
+      : 'Final Search Console data lags about 2 days behind today (dataState: "all" includes recent preliminary days); ') +
+    'also check that the property has search traffic in this period.'
   );
 }
 

@@ -87,7 +87,8 @@ technical work.
 
 - Summed query/page rows understate totals — anonymized low-volume queries are omitted. For
   true totals run one aggregate call (`dimensions: []`). Never present summed rows as the total.
-- Data lags ~2 days. Single-digit click differences are noise — never narrate a trend out of
+- Final data lags ~2 days. For the last day or two (e.g. right after a deploy) pass
+  `dataState: "all"` and say the newest days are preliminary and may still shift. Single-digit click differences are noise — never narrate a trend out of
   them; say "too little data to call" instead.
 - Google confirmed impressions/CTR/position were misreported 2025-05-13 → 2026-04-27 (clicks
   unaffected, no backfill). Flag any comparison whose window crosses that boundary.
