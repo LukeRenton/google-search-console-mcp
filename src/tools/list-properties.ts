@@ -1,6 +1,6 @@
 import type { McpServer } from '@modelcontextprotocol/server';
 import * as z from 'zod/v4';
-import { gscClient } from '../gsc.js';
+import { describeApiError, gscClient } from '../gsc.js';
 import { PINNED_PROPERTY } from '../pin.js';
 
 export function registerListProperties(server: McpServer): void {
@@ -17,7 +17,12 @@ export function registerListProperties(server: McpServer): void {
     },
     async () => {
       const gsc = await gscClient();
-      const response = await gsc.sites.list();
+      let response;
+      try {
+        response = await gsc.sites.list();
+      } catch (error) {
+        throw describeApiError(error);
+      }
       const entries = response.data.siteEntry ?? [];
       if (entries.length === 0) {
         return {
