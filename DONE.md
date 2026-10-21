@@ -1,5 +1,8 @@
 # Done — google-search-console-mcp  (archive; newest first)
 
+- [x] T-008 CHORE      — README agentic install prompt — done 2026-10-21, verified ✅
+      fix: "Or let your agent set it up" section under Quick start (README.md) · commit 4676cc9
+
 - [x] T-007 FEAT LOW  — dataState: 'all' on query_search_analytics for fresh preliminary data — done 2026-10-21, verified ✅
       fix: dataState param (default final), header flags preliminary data, empty-result hint, seo skill lag rule updated · commit c7a9cca
 

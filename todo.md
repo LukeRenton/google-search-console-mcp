@@ -11,6 +11,5 @@
 - [ ] T-004 FEAT LOW — orderBy param for query_search_analytics; models currently over-fetch and re-sort client-side _(src: chat 08-14)_
 - [ ] T-002 CHORE — add .gitattributes to normalize line endings and silence CRLF warnings before open-sourcing _(src: chat 08-21)_
 - [ ] T-005 CHORE — server version string in src/server.ts duplicates package.json; read it from one place _(src: chat 08-14)_
-- [~] T-008 CHORE — README "agentic install prompt": a paste-into-your-agent block that does the setup for the user _(src: chat 10-21, vmandic/searchconsole-mcp review)_
 
 ## Decisions
