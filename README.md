@@ -51,17 +51,21 @@ Then complete the one-time Google authorization below.
 ### Or let your agent set it up
 
 Paste this into Claude Code, Cursor, or another coding agent. It walks you through the Google
-Cloud steps (those need you in a browser), then handles registration, authorization, and
+Cloud steps (those need you in a browser), then handles installation, authorization, and
 verification itself.
 
 ```text
 Set up the Google Search Console MCP server (@lukerent/google-search-console-mcp) for me.
 README: https://github.com/LukeRenton/google-search-console-mcp#readme
 
-1. Identify which MCP client you are running in and register the server with it: for Claude
-   Code, `claude mcp add gsc -- npx -y @lukerent/google-search-console-mcp`; otherwise add a
-   "gsc" entry with command "npx" and args ["-y", "@lukerent/google-search-console-mcp"] to
-   the client's MCP config file. Ask me before editing any config file.
+1. Identify which MCP client you are running in. For Claude Code, install the `gsc` plugin
+   (server plus the companion `seo` skill): run
+   `claude plugin marketplace add LukeRenton/google-search-console-mcp`, then ask me which
+   scope I want (local: this repo, just me; project: shared with collaborators; user: every
+   project) and run `claude plugin install gsc@google-search-console-mcp --scope <scope>`.
+   For any other client, add a "gsc" entry with command "npx" and args
+   ["-y", "@lukerent/google-search-console-mcp"] to its MCP config file, asking me before
+   editing it.
 2. Ask whether I already have a Desktop-app OAuth client JSON for the Search Console API. If
    not, walk me through creating one, one step at a time, waiting for me after each:
    enable the "Google Search Console API" in a Google Cloud project; configure the OAuth
@@ -72,9 +76,7 @@ README: https://github.com/LukeRenton/google-search-console-mcp#readme
    browser for Google sign-in and waits until I finish, so run it with a timeout of several
    minutes, or ask me to run it myself if you can't wait that long. Confirm it prints
    "Saved credentials to ...".
-4. Ask whether I want the companion `seo` skill. If yes and you are Claude Code, shallow-clone
-   the repo to a temporary directory and copy its `skill/` folder to `~/.claude/skills/seo`.
-5. Tell me to restart the client (or reload MCP servers) so the new server loads. Once it has,
+4. Tell me to restart the client (or reload MCP servers) so the new server loads. Once it has,
    call the list_properties tool and show me the result to confirm everything works.
 ```
 
